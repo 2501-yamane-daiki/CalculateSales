@@ -37,6 +37,13 @@ public class CalculateSales {
 		}
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
+		File[] files = new File("C:\\Users\\trainee0944\\Desktop\\売り上げ集計プログラム基礎課題").listFiles();
+		
+		for(int i = 0; i < files.length ; i++) {
+				//files[i].getName() でファイル名が取得できます。
+		}
+			
+		
 
 
 
@@ -68,6 +75,10 @@ public class CalculateSales {
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
+				String[] items = line.split(",");
+				
+				branchNames.put(items[0],items[1]);
+				branchSales.put(items[0],0L);
 				System.out.println(line);
 			}
 
