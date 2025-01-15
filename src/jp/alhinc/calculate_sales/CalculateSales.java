@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+//ArrayList,Listをimportした。
+import java.util.List;
 import java.util.Map;
-
 public class CalculateSales {
 
 	// 支店定義ファイル名
@@ -37,13 +39,65 @@ public class CalculateSales {
 		}
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
-		File[] files = new File("C:\\Users\\trainee0944\\Desktop\\売り上げ集計プログラム基礎課題").listFiles();
-		
+		File[] files = new File(args[0]).listFiles();
+
+		List<File> rcdFiles = new ArrayList<>();
+		//BufferedReaderを初期化
+		BufferedReader br = null;
+		//filesの数だけ繰り返す
 		for(int i = 0; i < files.length ; i++) {
-				//files[i].getName() でファイル名が取得できます。
+				//ファイルの名前を取得とstring型に変更
+			    String name = files[i].getName();
+
+
+
+			    //売上ファイルのみをrcdFiles(リスト)に加える
+				if(name.matches("^[0-9] {8}.rcd$")) {
+					rcdFiles.add(files[i]);
+				}
+
+			//ファイルを開いて中身がないときのためのtry catch文？
+			try {
+				//リストの数だけ繰り返す
+				for(int j = 0; j < rcdFiles.size(); j++) {
+					//ファイルを開くための (パス(場所) と 名前)
+					File file = new File(args[0], name);
+					//ファイルを読み込んでいる
+					FileReader fr = new FileReader(file);
+					br = new BufferedReader(fr);
+
+					String rcdLine;
+					while((rcdLine = br.readLine()) != null) {
+						//改行で分解
+						String[] items = rcdLine.split("\\n");
+						//型をStringからLongに変更
+						long filesale = Long.parseLong(items[1]);
+
+						Long saleAmount =  branchSales.get(items[0]) + filesale;
+
+
+					}
+
+
+				}
 		}
-			
-		
+
+			 catch(IOException e) {
+			System.out.println(UNKNOWN_ERROR);
+			return;
+		} finally {
+			// ファイルを開いている場合
+			if(br != null) {
+				try {
+					// ファイルを閉じる
+					br.close();
+				} catch(IOException e) {
+					System.out.println(UNKNOWN_ERROR);
+					return ;
+				}
+			}
+		}
+		return;
 
 
 
@@ -76,7 +130,7 @@ public class CalculateSales {
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				String[] items = line.split(",");
-				
+
 				branchNames.put(items[0],items[1]);
 				branchSales.put(items[0],0L);
 				System.out.println(line);
