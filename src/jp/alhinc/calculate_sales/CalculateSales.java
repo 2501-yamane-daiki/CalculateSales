@@ -1,16 +1,16 @@
 package jp.alhinc.calculate_sales;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 //ArrayList,Listをimportした。
 import java.util.List;
 import java.util.Map;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
 public class CalculateSales {
 
 	// 支店定義ファイル名
@@ -42,7 +42,7 @@ public class CalculateSales {
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
 		File[] files = new File(args[0]).listFiles();
-
+		//リスト作成
 		List<File> rcdFiles = new ArrayList<>();
 		//BufferedReaderを初期化
 		BufferedReader br = null;
@@ -65,22 +65,23 @@ public class CalculateSales {
 				for(int j = 0; j < rcdFiles.size(); j++) {
 
 
-					//ファイルを開くための (パス(場所) と 名前)
-					//File file = new File(args[0],rcdFiles.get(j).getName() );
-					//ファイルを読み込んでいる
+					//ファイルを読み込む準備
 					FileReader fr = new FileReader(rcdFiles.get(j));
 					br = new BufferedReader(fr);
-
+					//初期化とリスト作成
 					String rcdLine;
 					List<String> salesList = new ArrayList<>();
 					//ファイルが読み込めなくなるまで行うため
 					while((rcdLine = br.readLine()) != null) {
-
+						//リストに追加
 						salesList.add(rcdLine);
 
 					}
+					//型を	longに変更
 					long filesale = Long.parseLong(salesList.get(1));
+					// branchSalesにfilesaleを追加
 					Long saleAmount =  branchSales.get(salesList.get(0)) + filesale;
+					//saleAmountをbrancSalesに戻す
 					branchSales.put(salesList.get(0),saleAmount);
 
 
@@ -138,11 +139,12 @@ public class CalculateSales {
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
+				// , で分割してitemsに入れる
 				String[] items = line.split(",");
-
+				//keyを使ってvauleに加える
 				branchNames.put(items[0],items[1]);
 				branchSales.put(items[0],0L);
-				System.out.println(line);
+				//System.out.println(line);
 			}
 
 		} catch(IOException e) {
@@ -177,11 +179,25 @@ public class CalculateSales {
 		BufferedWriter bw = null;
 
 		try {
+			//ファイルに書き込み準備
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
 			bw =new BufferedWriter(fw);
-
-			for(String key : branchName.key)
+			
+			
+			//拡張for文を使いmapからkeyを取得
+			for(String key : branchNames.keySet()) {
+				//型をStringに変更
+				String salesAmount = Long.toString(branchSales.get(key));
+				//ファイルに書き込み
+				bw.write(key);
+				bw.write(",");
+				bw.write(branchNames.get(key));
+				bw.write(",");
+				bw.write(salesAmount);
+			
+				bw.newLine();
+				}
 
 
 		}catch(IOException e) {
