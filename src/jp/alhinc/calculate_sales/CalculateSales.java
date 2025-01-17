@@ -60,50 +60,45 @@ public class CalculateSales {
 		}
 
 			//ファイルを開いて中身がないときのためのtry catch文？
-			try {
-				//リストの数だけ繰り返す
-				for(int j = 0; j < rcdFiles.size(); j++) {
+		try {
+			//リストの数だけ繰り返す
+			for(int i = 0; i < rcdFiles.size(); i++) {
 
 
-					//ファイルを読み込む準備
-					FileReader fr = new FileReader(rcdFiles.get(j));
-					br = new BufferedReader(fr);
-					//初期化とリスト作成
-					String rcdLine;
-					List<String> salesList = new ArrayList<>();
-					//ファイルが読み込めなくなるまで行うため
-					while((rcdLine = br.readLine()) != null) {
-						//リストに追加
-						salesList.add(rcdLine);
-
-					}
-					//型を	longに変更
-					long fileSale = Long.parseLong(salesList.get(1));
-					// branchSalesにfilesaleを追加
-					Long saleAmount = branchSales.get(salesList.get(0)) + fileSale;
-					//saleAmountをbrancSalesに戻す
-					branchSales.put(salesList.get(0), saleAmount);
-
-
-
-
+				//ファイルを読み込む準備
+				FileReader fr = new FileReader(rcdFiles.get(i));
+				br = new BufferedReader(fr);
+				//初期化とリスト作成
+				String rcdLine;
+				List<String> salesList = new ArrayList<>();
+				//ファイルが読み込めなくなるまで行うため
+				while((rcdLine = br.readLine()) != null) {
+					//リストに追加
+					salesList.add(rcdLine);
 
 				}
-			} catch(IOException e) {
-				System.out.println(UNKNOWN_ERROR);
-				return;
-			} finally {
-			// ファイルを開いている場合
-				if(br != null) {
-					try {
+				//型を	longに変更
+				long fileSale = Long.parseLong(salesList.get(1));
+				// branchSalesにfilesaleを追加
+				Long saleAmount = branchSales.get(salesList.get(0)) + fileSale;
+				//saleAmountをbrancSalesに戻す
+				branchSales.put(salesList.get(0), saleAmount);
+			}
+		} catch(IOException e) {
+			System.out.println(UNKNOWN_ERROR);
+			return;
+		} finally {
+		// ファイルを開いている場合
+			if(br != null) {
+				try {
 					// ファイルを閉じる
-						br.close();
-					} catch(IOException e) {
-						System.out.println(UNKNOWN_ERROR);
+					br.close();
+				} catch(IOException e) {
+					System.out.println(UNKNOWN_ERROR);
 						return;
-					}
 				}
 			}
+		}
 
 
 
@@ -194,7 +189,7 @@ public class CalculateSales {
 				bw.write(salesAmount);
 
 				bw.newLine();
-				}
+			}
 
 
 		} catch(IOException e) {
