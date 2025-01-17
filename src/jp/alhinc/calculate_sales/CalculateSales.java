@@ -51,8 +51,6 @@ public class CalculateSales {
 			//ファイルの名前を取得とstring型に変更
 			String name = files[i].getName();
 
-
-
 			//売上ファイルのみをrcdFiles(リスト)に加える
 			if(name.matches("^[0-9]{8}.rcd$")) {
 				rcdFiles.add(files[i]);
@@ -63,7 +61,6 @@ public class CalculateSales {
 		try {
 			//リストの数だけ繰り返す
 			for(int i = 0; i < rcdFiles.size(); i++) {
-
 
 				//ファイルを読み込む準備
 				FileReader fr = new FileReader(rcdFiles.get(i));
@@ -190,7 +187,6 @@ public class CalculateSales {
 
 				bw.newLine();
 			}
-
 
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
