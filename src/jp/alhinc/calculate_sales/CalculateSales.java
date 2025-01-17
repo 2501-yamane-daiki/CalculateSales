@@ -23,7 +23,10 @@ public class CalculateSales {
 	private static final String UNKNOWN_ERROR = "予期せぬエラーが発生しました";
 	private static final String FILE_NOT_EXIST = "支店定義ファイルが存在しません";
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
-
+	private static final String FILE_ORDER = "売上ファイル名が連番になっていません";
+	private static final String TOTAL_AMOUNT_EXCEEDED = "合計⾦額が10桁を超えました";
+	private static final String NO_BRANCH_CODE =  "の支店コードが不正です";
+	private static final String INOVALID_FORMAT = "のフォーマットが不正です"; 
 	/**
 	 * メインメソッド
 	 *
@@ -46,7 +49,7 @@ public class CalculateSales {
 		List<File> rcdFiles = new ArrayList<>();
 		//BufferedReaderを初期化
 		BufferedReader br = null;
-		//filesの数だけ繰り返す
+		//filesの数だけ繰り返
 		for(int i = 0; i < files.length; i++) {
 			//ファイルの名前を取得とstring型に変更
 			String name = files[i].getName();
@@ -56,8 +59,18 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
+			//ファイルが連番になっているか確認
+		for(int j = 0; j < rcdFiles.size() - 1; j++ ) {
+			int former = Integer.parseInt(rcdFiles.get(j).getName().substring(0, 8));
+			int latter = Integer.parseInt(rcdFiles.get(++j).getName().substring(0, 8));
 
-			//ファイルを開いて中身がないときのためのtry catch文？
+			if((latter - former) != 1) {
+				System.out.println( FILE_ORDER);
+				return;
+			}
+		}
+
+		//ファイルを開いて中身がないときのためのtry catch文？
 		try {
 			//リストの数だけ繰り返す
 			for(int i = 0; i < rcdFiles.size(); i++) {
@@ -74,10 +87,25 @@ public class CalculateSales {
 					salesList.add(rcdLine);
 
 				}
+				//売上ファイルのフォーマットを確認
+				if(salesList.size() != 2) {
+					System.out.println(rcdFiles.get(i).getName() + INOVALID_FORMAT);
+					return;
+				}
+				//Mapに特定のKeyが存在するか確認する方法
+				if(!branchNames.containsKey(salesList.get(0))) {
+					System.out.println(rcdFiles.get(i).getName() + NO_BRANCH_CODE);
+					return;
+				}
 				//型を	longに変更
 				long fileSale = Long.parseLong(salesList.get(1));
 				// branchSalesにfilesaleを追加
 				Long saleAmount = branchSales.get(salesList.get(0)) + fileSale;
+				//集計が10桁を超えてないか確認
+	  			if(saleAmount >= 10000000000L) {
+					System.out.println(TOTAL_AMOUNT_EXCEEDED);
+					return;
+				}
 				//saleAmountをbrancSalesに戻す
 				branchSales.put(salesList.get(0), saleAmount);
 			}
@@ -92,22 +120,16 @@ public class CalculateSales {
 					br.close();
 				} catch(IOException e) {
 					System.out.println(UNKNOWN_ERROR);
-						return;
+					return;
 				}
 			}
 		}
 
-
-
-
 		// 支店別集計ファイル書き込み処理
 		if(!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
-			return;}
-
+			return;
+		}
 	}
-
-
-
 	/**
 	 * 支店定義ファイル読み込み処理
 	 *
@@ -122,6 +144,11 @@ public class CalculateSales {
 
 		try {
 			File file = new File(path, fileName);
+			if(!file.exists()) {
+				//ファイルが存在しない場合
+				System.out.println(FILE_NOT_EXIST);
+				return false;
+			}
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 
@@ -131,6 +158,12 @@ public class CalculateSales {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				// , で分割してitemsに入れる
 				String[] items = line.split(",");
+				//ファイル名が合ってる確認している
+				if((items.length != 2) || (!items[0].matches("[0-9]{3}$"))){
+					System.out.println(FILE_INVALID_FORMAT);
+					return false;
+				}
+
 				//keyを使ってvauleに加える
 				branchNames.put(items[0], items[1]);
 				branchSales.put(items[0], 0L);
@@ -171,8 +204,7 @@ public class CalculateSales {
 			//ファイルに書き込み準備
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
-			bw =new BufferedWriter(fw);
-
+			bw = new BufferedWriter(fw);
 
 			//拡張for文を使いmapからkeyを取得
 			for(String key:branchNames.keySet()) {
