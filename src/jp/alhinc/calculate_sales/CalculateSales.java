@@ -47,16 +47,16 @@ public class CalculateSales {
 		//BufferedReaderを初期化
 		BufferedReader br = null;
 		//filesの数だけ繰り返す
-		for(int i = 0; i < files.length ; i++) {
-				//ファイルの名前を取得とstring型に変更
-			    String name = files[i].getName();
+		for(int i = 0; i < files.length; i++) {
+			//ファイルの名前を取得とstring型に変更
+			String name = files[i].getName();
 
 
 
-			    //売上ファイルのみをrcdFiles(リスト)に加える
-				if(name.matches("^[0-9]{8}.rcd$")) {
-					rcdFiles.add(files[i]);
-				}
+			//売上ファイルのみをrcdFiles(リスト)に加える
+			if(name.matches("^[0-9]{8}.rcd$")) {
+				rcdFiles.add(files[i]);
+			}
 		}
 
 			//ファイルを開いて中身がないときのためのtry catch文？
@@ -78,34 +78,32 @@ public class CalculateSales {
 
 					}
 					//型を	longに変更
-					long filesale = Long.parseLong(salesList.get(1));
+					long fileSale = Long.parseLong(salesList.get(1));
 					// branchSalesにfilesaleを追加
-					Long saleAmount =  branchSales.get(salesList.get(0)) + filesale;
+					Long saleAmount = branchSales.get(salesList.get(0)) + fileSale;
 					//saleAmountをbrancSalesに戻す
-					branchSales.put(salesList.get(0),saleAmount);
+					branchSales.put(salesList.get(0), saleAmount);
 
 
 
 
 
 				}
-		}
-
-			 catch(IOException e) {
-			System.out.println(UNKNOWN_ERROR);
-			return;
-		} finally {
+			} catch(IOException e) {
+				System.out.println(UNKNOWN_ERROR);
+				return;
+			} finally {
 			// ファイルを開いている場合
-			if(br != null) {
-				try {
+				if(br != null) {
+					try {
 					// ファイルを閉じる
-					br.close();
-				} catch(IOException e) {
-					System.out.println(UNKNOWN_ERROR);
-					return ;
+						br.close();
+					} catch(IOException e) {
+						System.out.println(UNKNOWN_ERROR);
+						return;
+					}
 				}
 			}
-		}
 
 
 
@@ -114,7 +112,7 @@ public class CalculateSales {
 		if(!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
 			return;}
 
-		}
+	}
 
 
 
@@ -142,9 +140,8 @@ public class CalculateSales {
 				// , で分割してitemsに入れる
 				String[] items = line.split(",");
 				//keyを使ってvauleに加える
-				branchNames.put(items[0],items[1]);
-				branchSales.put(items[0],0L);
-				//System.out.println(line);
+				branchNames.put(items[0], items[1]);
+				branchSales.put(items[0], 0L);
 			}
 
 		} catch(IOException e) {
@@ -183,10 +180,10 @@ public class CalculateSales {
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
 			bw =new BufferedWriter(fw);
-			
-			
+
+
 			//拡張for文を使いmapからkeyを取得
-			for(String key : branchNames.keySet()) {
+			for(String key:branchNames.keySet()) {
 				//型をStringに変更
 				String salesAmount = Long.toString(branchSales.get(key));
 				//ファイルに書き込み
@@ -195,12 +192,12 @@ public class CalculateSales {
 				bw.write(branchNames.get(key));
 				bw.write(",");
 				bw.write(salesAmount);
-			
+
 				bw.newLine();
 				}
 
 
-		}catch(IOException e) {
+		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
 			return false;
 		} finally {
