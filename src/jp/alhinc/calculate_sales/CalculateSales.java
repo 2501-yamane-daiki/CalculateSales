@@ -55,11 +55,11 @@ public class CalculateSales {
 		Map<String, Long> commoditySales = new HashMap<>();
 
 		// 支店定義ファイル読み込み処理
-		if ( !readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, "^[0-9]{3}$", "支店")) {
+		if (!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales, "^[0-9]{3}$", "支店")) {
 			return;
 		}
 		//商品定義ファイル読み込み処理
-		if ( !readFile(args[0], FILE_NAME_COMMODITY_LST, commodityNames, commoditySales, "^[A-Za-z1-9]{8}$", "商品")) {
+		if (!readFile(args[0], FILE_NAME_COMMODITY_LST, commodityNames, commoditySales, "^[A-Za-z1-9]{8}$", "商品")) {
 			return;
 		}
 
@@ -117,17 +117,17 @@ public class CalculateSales {
 				}
 				//
 				//Mapに特定のKeyが存在するか確認する方法支店バージョン
-				if (! branchNames.containsKey(salesList.get(0))) {
+				if (!branchNames.containsKey(salesList.get(0))) {
 					System.out.println(rcdFiles.get(i).getName() + NO_BRANCH_CODE);
 					return;
 				}
 				//Mapに特定のKeyが存在するか確認する方法商品名バージョン
-				if (! commodityNames.containsKey(salesList.get(1))) {
+				if (!commodityNames.containsKey(salesList.get(1))) {
 					System.out.println(rcdFiles.get(i).getName() + NO_COMMODITY_CODE);
 					return;
 				}
 				////売上金額が数字なのか確認
-				if (! salesList.get(2).matches("^[0-9]*$")) {
+				if (!salesList.get(2).matches("^[0-9]*$")) {
 					System.out.println(UNKNOWN_ERROR);
 					return;
 				}
@@ -166,10 +166,10 @@ public class CalculateSales {
 			}
 		}
 		// 支店別集計ファイル書き込み処理
-		if ( !writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
+		if (!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
 			return;
 		}
-		if ( !writeFile(args[0], FILE_NAME_COMMDITY_OUT, commodityNames, commoditySales)) {
+		if (!writeFile(args[0], FILE_NAME_COMMDITY_OUT, commodityNames, commoditySales)) {
 			return;
 		}
 	}
@@ -188,7 +188,7 @@ public class CalculateSales {
 
 		try {
 			File file = new File(path, fileName);
-			if ( !file.exists()) {
+			if (!file.exists()) {
 				//ファイルが存在しない場合
 				System.out.println(name + FILE_NOT_EXIST);
 				return false;
@@ -204,7 +204,7 @@ public class CalculateSales {
 				String[] items = line.split(",");
 				//ファイル名が合ってる確認している
 				//matchesと出力内容を引数
-				if ((items.length != 2) || ( !items[0].matches(fileTest))) {
+				if ((items.length != 2) || (!items[0].matches(fileTest))) {
 					System.out.println(name + FILE_INVALID_FORMAT);
 					return false;
 				}
