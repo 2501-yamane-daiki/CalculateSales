@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 //ArrayList,Listをimportした。
 import java.util.List;
@@ -67,11 +68,12 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
-
+		//売上ファイルを保持しているListを昇順ソート
+		Collections.sort(rcdFiles);
 		//ファイルが連番になっているか確認
 		for (int i = 0; i < rcdFiles.size() - 1; i++) {
 			int former = Integer.parseInt(rcdFiles.get(i).getName().substring(0, 8));
-			int latter = Integer.parseInt(rcdFiles.get(i++).getName().substring(0, 8));
+			int latter = Integer.parseInt(rcdFiles.get(i + 1).getName().substring(0, 8));
 
 			if ((latter - former) != 1) {
 				System.out.println(FILE_ORDER);
